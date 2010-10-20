@@ -67,6 +67,7 @@ module SolrMapper
                 alias :super_delete :delete
 
                 def << val
+                  val.save
                   push val
                   @owner.save()
                 end
@@ -79,7 +80,7 @@ module SolrMapper
                 def destroy val
                   val.destroy
                   delete val
-                end                        
+                end
 
                 def delete val
                   super_delete val
@@ -117,6 +118,10 @@ module SolrMapper
       end
 
       protected
+
+      def connect_array
+
+      end
 
       def determine_names(target, opts = {})
         class_name = opts[:class_name]

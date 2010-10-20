@@ -105,12 +105,9 @@ describe SolrMapper::SolrDocument do
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add61')
 
     stuff = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add81', :name => 'brand new stuff'})
-    stuff.save()
-
     sleep 0.1
 
     thing.stuffs << stuff
-    thing.save()
 
     sleep 0.1
 
