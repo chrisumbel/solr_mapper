@@ -49,7 +49,7 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
   searched_things = Thing.search('sample')
 
   # a more structured query
-  searched_things = Thing.query({:upc_code => '1234567'})
+  queried_things = Thing.query({:upc_code => '1234567'})
 
 === Writing
 
