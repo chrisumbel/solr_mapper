@@ -96,7 +96,7 @@ describe SolrMapper::SolrDocument do
     thing.stuffs[1]._id.should == '04787560-bc23-012d-817c-60334b2add81'
   end
 
-  it "should store has_many relations by object by direct assignment" do
+  it "should be able to mix update methods" do
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add60')
 
     stuff1 = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add80', :name => 'brand new stuff 1'})

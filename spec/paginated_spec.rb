@@ -50,7 +50,7 @@ describe SolrMapper::SolrDocument do
   end
 
   it "should have correct default counts" do
-    page = Thing.paginate(:search_string => '*:*')
+    page = Thing.paginate(:search => '*:*')
     page.per_page.should == 10
     page.total_entries.should == 12
     page.total_pages.should == 2
@@ -58,9 +58,9 @@ describe SolrMapper::SolrDocument do
   end
 
   it "should have correct specified counts" do
-    page1 = Thing.paginate(:search_string => '*:*', :rows => 5)
-    page2 = Thing.paginate(:search_string => '*:*', :rows => 5, :page => 2)
-    page3 = Thing.paginate(:search_string => '*:*', :rows => 5, :page => 3)
+    page1 = Thing.paginate(:search => '*:*', :rows => 5)
+    page2 = Thing.paginate(:search => '*:*', :rows => 5, :page => 2)
+    page3 = Thing.paginate(:search => '*:*', :rows => 5, :page => 3)
 
     page1.total_pages.should == 3
     page2.total_pages.should == 3
@@ -71,8 +71,8 @@ describe SolrMapper::SolrDocument do
   end
 
   it "should have a small page 2 bisect a page 1 twice its size" do
-    big_page1 = Thing.paginate(:search_string => '*:*')
-    small_page2 = Thing.paginate(:search_string => '*:*', :rows => 5, :page => 2)
+    big_page1 = Thing.paginate(:search => '*:*')
+    small_page2 = Thing.paginate(:search => '*:*', :rows => 5, :page => 2)
 
     big_page1[5]._id.should == small_page2[0]._id
   end

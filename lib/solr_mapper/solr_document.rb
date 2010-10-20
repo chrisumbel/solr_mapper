@@ -70,13 +70,18 @@ module SolrMapper
       end
 
       def query(values, opts = {})
+        results, count = query_counted(values, opts)
+        results
+      end
+
+      def query_counted(values, opts = {})
         search_string = ''
 
         values.each_pair do |k, v|
           search_string << "#{k}:#{v} "
         end
 
-        search(search_string.chop, opts)
+        search_counted(search_string.chop, opts)
       end
 
       def find(id)
@@ -84,6 +89,7 @@ module SolrMapper
         return result[0] if result.count > 0
       end
 
+      # return will_paginate pages for search queries
       def paginate(opts = {})
         opts[:page] ||= 1
         opts[:page] = opts[:page].to_i if opts[:page].respond_to?(:to_i)
@@ -91,11 +97,19 @@ module SolrMapper
         opts[:start] = (opts[:page] - 1) * opts[:rows]
 
         WillPaginate::Collection.create(opts[:page], opts[:rows]) do |pager|
-          results, count = search_counted(opts[:search_string], opts)
-          results.compact!
+          if opts[:search]
+            results, count = search_counted(opts[:search], opts)
+          elsif opts[:query]
+            results, count = query_counted(opts[:query], opts)
+          end
 
-          pager.total_entries = count
-          pager.replace(results)
+          if results
+            results.compact!
+
+            pager.total_entries = count
+            pager.replace(results)
+            return pager
+          end          
         end
       end
 
