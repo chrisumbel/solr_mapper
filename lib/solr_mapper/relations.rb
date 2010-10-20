@@ -19,7 +19,7 @@ module SolrMapper
 
       def has_one(target, opts = {})
         class_name, field_name, variable_name, id_field = determine_names(target, opts)
-        id_field = "#{id_field}_id"
+        id_field = foreign_key(id_field)
 
         class_eval do
           define_method field_name do
@@ -56,10 +56,13 @@ module SolrMapper
               val.instance_variable_set("@owner", self)
               val.instance_variable_set("@field_name", field_name.to_s)
 
-              if ids
-                ids.each do |id|
-                  val << Object::const_get(class_name).find(id)
-                end
+              unless ids
+                instance_variable_set(id_field, [])
+                ids = instance_variable_get(id_field)
+              end
+
+              ids.each do |id|
+                val << Object::const_get(class_name).find(id)
               end
 
               class << val
@@ -113,15 +116,30 @@ module SolrMapper
         end
       end
 
-      def belongs_to(target, opts = {})
-        puts "belongs to #{target}"
+      def belongs_to(target_name, opts = {})
+        target_id_field_name = foreign_key(self.name)
+
+        class_eval do
+          define_method target_name do
+            owner = instance_variable_get("@#{target_name}")
+
+            unless owner
+              owner = Object::const_get(classify(target_name)).query(target_id_field_name => instance_variable_get("@_id"))[0]
+              instance_variable_set("@#{target_name}", owner)
+            end
+            
+            owner
+          end
+
+          define_method "#{target_name}=" do |val|
+            instance_variable_set("@#{target_name}", val)
+            val.instance_variable_set("@#{target_id_field_name}", instance_variable_get("@_id"))
+            val.save()            
+          end
+        end
       end
 
       protected
-
-      def connect_array
-
-      end
 
       def determine_names(target, opts = {})
         class_name = opts[:class_name]
@@ -137,7 +155,7 @@ module SolrMapper
     def refresh_relation(field_name)
       ids = instance_variable_get(self.class.has_many_relationships[field_name])
       ids.clear
-
+        
       instance_variable_get("@#{field_name}").each do |child|
         ids << child._id
       end

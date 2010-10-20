@@ -23,12 +23,16 @@ class Stuff
   include SolrDocument
   @base_url = 'http://localhost:8080/solr_stuff'
   @per_page = 10
+
+  belongs_to :thing
 end
 
 class Widget
   include SolrDocument
   @base_url = 'http://localhost:8080/solr_widget'
   @per_page = 10
+
+  belongs_to :thing
 end
 
 class Thing

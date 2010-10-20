@@ -5,7 +5,7 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
 == Examples
 
 === Model
-
+  require 'solr_mapper'
   include SolrMapper
 
   class Stuff
@@ -59,7 +59,6 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
 === Writing Related Objects
 
   thing = Thing.new({:_id => 2, :content => 'sample content'})
-
   thing.stuffs << Stuff.new({:_id => 10, :content => 'sample stuff'})
 
 === Paged Queries
@@ -68,6 +67,14 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
   page = Thing.paginate(:search_string => '*:*', :rows => 5)
   puts page.total_pages
   puts page.count
+
+=== Deleting
+  # destroys thing from index
+  Thing.find(1).destroy
+
+  stuff = Stuffs.find(3)
+  # deletes reference and destroys stuff from index
+  Thing.find(2).stuffs.destroy(stuff)
 
 
 == Copyright

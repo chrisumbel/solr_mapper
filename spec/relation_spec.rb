@@ -131,10 +131,7 @@ describe SolrMapper::SolrDocument do
 
   it "shouldn't destroy a child when deleting it" do
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add61')
-
     stuff = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add80', :name => 'brand new stuff 1'})
-    stuff.save
-
     thing.stuffs << stuff
 
     stuff_id = stuff._id
@@ -165,5 +162,23 @@ describe SolrMapper::SolrDocument do
 
     stuff = Stuff.find(stuff_id)
     stuff.should be(nil)
+  end
+
+  it "should support a navigation member for belongs_to" do
+    thing = Thing.new(:_id => '04787560-bc23-012d-817c-60334b2add90')
+    stuff = Stuff.new(:_id => '04787560-bc23-012d-817c-60334b2add95', :name => 'brand new stuff 1')
+    thing.stuffs << stuff
+
+    stuff.thing._id.should == thing._id
+  end
+
+  it "should support assignment via belongs_to" do
+    thing = Thing.new(:_id => '04787560-bc23-012d-817c-60334b2add91')
+    stuff = Stuff.new(:_id => '04787560-bc23-012d-817c-60334b2add96', :name => 'brand new stuff 1')
+    
+    stuff.thing = thing
+    stuff.save()
+
+    Stuff.find('04787560-bc23-012d-817c-60334b2add96').thing._id.should == thing._id
   end
 end
