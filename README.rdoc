@@ -13,7 +13,7 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
     @base_url = 'http://localhost:8080/solr/stuff'
     @per_page = 25
 
-    belongs_to :Thing
+    belongs_to :thing
   end
 
   class Widget
@@ -21,7 +21,7 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
     @base_url = 'http://localhost:8080/solr/widget'
     @per_page = 15
 
-    belongs_to :Thing
+    belongs_to :thing
   end
 
   class Thing
