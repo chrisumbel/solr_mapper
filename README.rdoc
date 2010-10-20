@@ -1,0 +1,7 @@
+= SolrMapper
+
+A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
+
+== Copyright
+
+Copyright 2010 The Skunkworx.
