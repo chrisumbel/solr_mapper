@@ -6,48 +6,47 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
 
 === Model
 
-include SolrMapper
+  include SolrMapper
 
-class Stuff
-  include SolrDocument
-  @base_url = 'http://localhost:8080/solr_stuff'
-  @per_page = 25
-end
+  class Stuff
+    include SolrDocument
+    @base_url = 'http://localhost:8080/solr_stuff'
+    @per_page = 25
+  end
 
-class Widget
-  include SolrDocument
-  @base_url = 'http://localhost:8080/solr_widget'
-  @per_page = 15
-end
+  class Widget
+    include SolrDocument
+    @base_url = 'http://localhost:8080/solr_widget'
+    @per_page = 15
+  end
 
-class Thing
-  include SolrDocument
-  @base_url = 'http://localhost:8080/solr_thing'
-  @per_page = 10
+  class Thing
+    include SolrDocument
+    @base_url = 'http://localhost:8080/solr_thing'
+    @per_page = 10
 
-  has_many :stuffs
-  has_one :widget
-end
+    has_many :stuffs
+    has_one :widget
+  end
 
 === Reading
 
-thing = Thing.find(1)
+  thing = Thing.find(1)
 
-puts thing.widget.name
+  puts thing.widget.name
 
-thing.stuffs.each do |stuff|
+  thing.stuffs.each do |stuff|
     puts stuff.name
-end
+  end
 
 === Saving
 
-thing = Thing.find(1)
+  thing = Thing.find(1)
 
-stuff = Stuff.new({:_id => 2, :name => 'sample name'})
-stuff.save()
+  stuff = Stuff.new({:_id => 2, :name => 'sample name'})
+  stuff.save()
 
-thing << stuff
-
+  thing << stuff
 
 == Copyright
 
