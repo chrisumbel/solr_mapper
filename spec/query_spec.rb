@@ -41,8 +41,6 @@ describe SolrMapper::SolrDocument do
 
     thing.save()
 
-    sleep 0.1
-
     saved_thing = Thing.find(id)
     saved_thing.content.should == thing.content
   end
@@ -54,8 +52,6 @@ describe SolrMapper::SolrDocument do
     thing.content << ' additional content'
     thing.save()
 
-    sleep 0.1
-
     saved_thing = Thing.find(id)
     saved_thing.content.should == thing.content
   end
@@ -65,8 +61,6 @@ describe SolrMapper::SolrDocument do
 
     thing = Thing.find(id)
     thing.destroy
-
-    sleep 0.1
 
     deleted_thing = Thing.find(id)
     deleted_thing.should be(nil)
@@ -79,8 +73,6 @@ describe SolrMapper::SolrDocument do
     thing = Thing.find(id)
     name = thing.name
     thing.update_attributes({:content => new_content})
-
-    sleep 0.1
 
     saved_thing = Thing.find(id)
     saved_thing.content.should == new_content # make sure the content HAS changed

@@ -86,13 +86,30 @@ describe SolrMapper::SolrDocument do
     stuff2 = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add81', :name => 'brand new stuff 2'})
     stuff2.save
 
-    sleep 0.1
-
     thing.stuffs = [stuff1, stuff2]
 
     thing.save()
+    thing = Thing.find('04787560-bc23-012d-817c-60334b2add60')
 
-    sleep 0.1
+    thing.stuffs.count.should == 2
+    thing.stuffs[0]._id.should == '04787560-bc23-012d-817c-60334b2add80'
+    thing.stuffs[1]._id.should == '04787560-bc23-012d-817c-60334b2add81'
+  end
+
+  it "should store has_many relations by object by direct assignment" do
+    thing = Thing.find('04787560-bc23-012d-817c-60334b2add60')
+
+    stuff1 = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add80', :name => 'brand new stuff 1'})
+    stuff1.save
+
+    stuff2 = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add81', :name => 'brand new stuff 2'})
+    stuff2.save
+
+    thing.stuffs = [stuff1]
+
+    thing.save()
+    
+    thing.stuffs << stuff2
 
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add60')
 
@@ -101,15 +118,13 @@ describe SolrMapper::SolrDocument do
     thing.stuffs[1]._id.should == '04787560-bc23-012d-817c-60334b2add81'
   end
 
+
   it "should store has_many relations by object by left shift" do
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add61')
 
     stuff = Stuff.new({:_id => '04787560-bc23-012d-817c-60334b2add81', :name => 'brand new stuff'})
-    sleep 0.1
 
     thing.stuffs << stuff
-
-    sleep 0.1
 
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add61')
     thing.stuffs.count.should == 2
@@ -122,8 +137,6 @@ describe SolrMapper::SolrDocument do
     
     thing.stuffs.delete(thing.stuffs[0])    
     thing.save()
-
-    sleep 0.1
 
     thing = Thing.find('04787560-bc23-012d-817c-60334b2add61')
     thing.stuffs.count.should == ct - 1
@@ -138,8 +151,6 @@ describe SolrMapper::SolrDocument do
 
     thing.stuffs.delete(stuff)
     thing.save()
-
-    sleep 0.1
 
     stuff = Stuff.find(stuff_id)
     stuff.should_not be(nil)
@@ -157,8 +168,6 @@ describe SolrMapper::SolrDocument do
 
     thing.stuffs.destroy(stuff)
     thing.save()
-
-    sleep 0.1
 
     stuff = Stuff.find(stuff_id)
     stuff.should be(nil)

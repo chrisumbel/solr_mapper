@@ -46,6 +46,36 @@ module SolrMapper
         has_many_relationships[field_name.to_s] = id_field
 
         class_eval do
+          def relationize_array(array)
+            class << array
+              alias :super_push :push
+              alias :super_delete :delete
+
+              def << val
+                val.save
+                push val
+                @owner.save()
+              end
+
+              def push val
+                super_push val
+                @owner.refresh_relation(instance_variable_get("@field_name"))
+              end
+
+              def destroy val
+                val.destroy
+                delete val
+              end
+
+              def delete val
+                super_delete val
+                @owner.refresh_relation(instance_variable_get("@field_name"))
+              end
+            end
+
+            array
+          end
+          
           define_method field_name do
             val = instance_variable_get(variable_name)
 
@@ -65,31 +95,8 @@ module SolrMapper
                 val << Object::const_get(class_name).find(id)
               end
 
-              class << val
-                alias :super_push :push
-                alias :super_delete :delete
-
-                def << val
-                  val.save
-                  push val
-                  @owner.save()
-                end
-
-                def push val
-                  super_push val
-                  @owner.refresh_relation(instance_variable_get("@field_name"))
-                end
-
-                def destroy val
-                  val.destroy
-                  delete val
-                end
-
-                def delete val
-                  super_delete val
-                  @owner.refresh_relation(instance_variable_get("@field_name"))
-                end
-              end
+              # patch this array up so it does the callbacks we need
+              relationize_array(val)
 
               instance_variable_set(variable_name, val)
             end
@@ -108,6 +115,9 @@ module SolrMapper
               vals.each do |obj|
                 ids << obj._id
               end
+
+              # if we didnt' create this array we'll have to patch it up to deal with our callbacks & patching
+              relationize_array(vals) unless vals.respond_to?(:destroy)
             end
 
             instance_variable_set(id_field, ids)

@@ -35,7 +35,7 @@ module SolrMapper
         # make an xml commit message Solr will be happy with
         commit_message = ''
         builder = Builder::XmlMarkup.new(:target => commit_message, :indent => 2)
-        builder.commit('waitFlush' => false, 'waitSearcher' => false)
+        builder.commit('waitFlush' => true, 'waitSearcher' => true)
 
         send_update(commit_message)
       end
