@@ -15,9 +15,14 @@
 module SolrMapper
   module SolrDocument
     module ClassMethods
-      def first(id)
-        result = query(:id => id)
-        return result[0] if result.count > 0
+      def first(search_query = '*:*', opts = {})
+        if search_query.kind_of?(Hash)
+          results = query(search_query, opts)
+        else
+          results = search(search_query.to_s, opts)
+        end
+        
+        results[0]
       end
     end
   end

@@ -44,7 +44,7 @@ module SolrMapper
         qs = build_qs(opts)
         qs = '?' + qs unless qs.empty?
 
-        "#{base_url}/#{path}#{qs}"
+        URI::escape("#{base_url}/#{path}#{qs}")
       end
 
       def build_qs(opts)
