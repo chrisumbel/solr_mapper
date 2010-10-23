@@ -22,6 +22,6 @@ Echoe.new('solr_mapper', '0.1.0') do |p|
   p.author         = "Chris Umbel"
   p.email          = "chrisu@dvdempire.com"
   p.ignore_pattern = ["tmp/*", "script/*"]
-  p.runtime_dependencies = ['rest-client', 'uuid', 'will_paginate']
+  p.runtime_dependencies = ['rest-client', 'uuid', 'will_paginate', 'active_support']
   p.development_dependencies = []
 end
