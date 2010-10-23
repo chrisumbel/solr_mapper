@@ -214,12 +214,12 @@ module SolrMapper
       save()
     end
 
+    def to_param
+      instance_variable_get('@_id').to_s
+    end
+
     def initialize(data = {})
       update_attributes_values(data)
     end
-
-    def to_param
-      _id.to_s
-    end    
   end
 end
