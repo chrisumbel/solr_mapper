@@ -64,11 +64,13 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
 === Paged Queries
 
   # will_paginate page returned.  :rows overrides the @per_page setting
-  page = Thing.paginate(:search => '*:*', :rows => 5)
+  # with a search string
+  page = Thing.paginate('*:*', :rows => 5)
   puts page.total_pages
   puts page.count  
 
-  page = Thing.paginate(:query => {:name => 'Sample Name'}, :rows => 5)
+  # with a structured hash search
+  page = Thing.paginate({:name => 'Sample Name'}, {:rows => 5})
   puts page.total_pages
   puts page.count
 

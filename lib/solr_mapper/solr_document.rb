@@ -90,17 +90,17 @@ module SolrMapper
       end
 
       # return will_paginate pages for search queries
-      def paginate(opts = {})
+      def paginate(search_query, opts = {})
         opts[:page] ||= 1
         opts[:page] = opts[:page].to_i if opts[:page].respond_to?(:to_i)
         opts[:rows] ||= per_page || 10
         opts[:start] = (opts[:page] - 1) * opts[:rows]
 
         WillPaginate::Collection.create(opts[:page], opts[:rows]) do |pager|
-          if opts[:search]
-            results, count = search_counted(opts[:search], opts)
-          elsif opts[:query]
-            results, count = query_counted(opts[:query], opts)
+          if search_query.kind_of?(Hash)
+            results, count = query_counted(search_query, opts)
+          else
+            results, count = search_counted(search_query.to_s, opts)
           end
 
           if results

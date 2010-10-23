@@ -50,17 +50,17 @@ describe SolrMapper::SolrDocument do
   end
 
   it "should have correct default counts" do
-    page = Thing.paginate(:search => '*:*')
+    page = Thing.paginate('*:*')
     page.per_page.should == 10
     page.total_entries.should == 12
     page.total_pages.should == 2
     page.current_page.should == 1
   end
 
-  it "should have correct specified counts" do
-    page1 = Thing.paginate(:search => '*:*', :rows => 5)
-    page2 = Thing.paginate(:search => '*:*', :rows => 5, :page => 2)
-    page3 = Thing.paginate(:search => '*:*', :rows => 5, :page => 3)
+  it "should have correct specified counts by search string" do
+    page1 = Thing.paginate('*:*', :rows => 5)
+    page2 = Thing.paginate('*:*', :rows => 5, :page => 2)
+    page3 = Thing.paginate('*:*', :rows => 5, :page => 3)
 
     page1.total_pages.should == 3
     page2.total_pages.should == 3
@@ -70,9 +70,29 @@ describe SolrMapper::SolrDocument do
     page3.count.should == 2
   end
 
-  it "should have a small page 2 bisect a page 1 twice its size" do
-    big_page1 = Thing.paginate(:search => '*:*')
-    small_page2 = Thing.paginate(:search => '*:*', :rows => 5, :page => 2)
+  it "should have correct specified counts by query" do
+    page1 = Thing.paginate({'*' => '*'}, {:rows => 5})
+    page2 = Thing.paginate({'*' => '*'}, {:rows => 5, :page => 2})
+    page3 = Thing.paginate({'*' => '*'}, {:rows => 5, :page => 3})
+
+    page1.total_pages.should == 3
+    page2.total_pages.should == 3
+    page3.total_pages.should == 3
+    page1.count.should == 5
+    page2.count.should == 5
+    page3.count.should == 2
+  end
+
+  it "should have a small page 2 bisect a page 1 twice its size by search string" do
+    big_page1 = Thing.paginate('*:*')
+    small_page2 = Thing.paginate('*:*', :rows => 5, :page => 2)
+
+    big_page1[5]._id.should == small_page2[0]._id
+  end
+
+  it "should have a small page 2 bisect a page 1 twice its size by query" do
+    big_page1 = Thing.paginate('*' => '*')
+    small_page2 = Thing.paginate({'*' => '*'}, {:rows => 5, :page => 2})
 
     big_page1[5]._id.should == small_page2[0]._id
   end
