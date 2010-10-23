@@ -218,4 +218,8 @@ module SolrMapper
       update_attributes_values(data)
     end
   end
+
+  def to_param
+    _id
+  end
 end
