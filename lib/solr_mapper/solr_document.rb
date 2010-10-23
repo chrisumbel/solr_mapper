@@ -217,9 +217,9 @@ module SolrMapper
     def initialize(data = {})
       update_attributes_values(data)
     end
-  end
 
-  def to_param
-    _id
+    def to_param
+      _id.to_s
+    end    
   end
 end
