@@ -16,7 +16,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('solr_mapper', '0.1.1') do |p|
+Echoe.new('solr_mapper', '0.1.2') do |p|
   p.description    = "Object Document Mapper for the Apache Foundation's Solr search platform"
   p.url            = "http://github.com/skunkworx/solr_mapper.git"
   p.author         = "Chris Umbel"

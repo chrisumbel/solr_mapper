@@ -2,6 +2,10 @@
 
 A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
 
+== Installing
+
+gem install solr_mapper
+
 == Examples
 
 === Model
