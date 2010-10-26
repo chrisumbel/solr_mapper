@@ -29,8 +29,13 @@ describe SolrMapper::SolrDocument do
   end
 
   it "should return results" do
-    Thing.search("*:*").count.should > 0
+    Thing.query("*:*").count.should > 0
   end
+
+  it "should have identical query and search methods until search is removed" do
+    Thing.query("*:*").count.should == Thing.search("*:*").count
+    Thing.query("name:content").count.should == Thing.search("name:content").count
+  end  
 
   it "should save new and recall" do
     id = UUID.new().generate()

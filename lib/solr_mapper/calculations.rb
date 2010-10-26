@@ -17,7 +17,7 @@ module SolrMapper
     module ClassMethods
       def count(search = nil)
         search ||= '*:*'
-        _, ct = search_counted(search, {:rows => 0})
+        _, ct = query_counted(search, {:rows => 0})
         ct
       end
     end

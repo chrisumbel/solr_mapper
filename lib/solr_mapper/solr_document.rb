@@ -59,29 +59,33 @@ module SolrMapper
         uri.chop
       end
 
-      def search_counted(search_string, opts = {})
-        response = execute_read(opts.merge(:q => search_string))
+      def search(values, opts = {})
+        puts "Warning, the search method is deprecated and will be removed in a future release."
+        puts "Instead use 'query' which can accept a string."
 
-        return map(response), response['response']['numFound']
-      end
-
-      def search(search_string, opts = {})
-        search_counted(search_string, opts)[0]
+        query(values, opts)
       end
 
       def query(values, opts = {})
-        results, count = query_counted(values, opts)
+        results, _ = query_counted(values, opts)
         results
       end
 
       def query_counted(values, opts = {})
-        search_string = ''
+        if values.kind_of?(Hash)
+          search_string = ''
 
-        values.each_pair do |k, v|
-          search_string << "#{k}:#{v} "
+          values.each_pair do |k, v|
+            search_string << "#{k}:#{v} "
+          end
+
+          search_string = search_string.chop
+        else
+          search_string = values.to_s
         end
 
-        search_counted(search_string.chop, opts)
+        response = execute_read(opts.merge(:q => search_string))
+        return map(response), response['response']['numFound']
       end
 
       def find(id)
@@ -97,11 +101,7 @@ module SolrMapper
         opts[:start] = (opts[:page] - 1) * opts[:rows]
 
         WillPaginate::Collection.create(opts[:page], opts[:rows]) do |pager|
-          if search_query.kind_of?(Hash)
-            results, count = query_counted(search_query, opts)
-          else
-            results, count = search_counted(search_query.to_s, opts)
-          end
+          results, count = query_counted(search_query, opts)
 
           if results
             results.compact!

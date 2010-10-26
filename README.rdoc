@@ -46,10 +46,13 @@ A Ruby Object Document Mapper for the Apache Foundation's Solr search platform
 === Querying
 
   # freetext-style search
-  searched_things = Thing.search('sample')
+  searched_things = Thing.query('sample')
 
-  # a more structured query
+  # a more structured query with a hash
   queried_things = Thing.query({:upc_code => '1234567'})
+
+  # direct solr search
+  searched_things = Thing.query('name:sample')
 
 === Writing
 
