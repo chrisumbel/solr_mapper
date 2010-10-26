@@ -128,7 +128,7 @@ module SolrMapper
               solr_fields << k.to_s unless solr_fields.include?(k.to_s)
             end
             
-            obj.instance_variable_set("@#{k}", v)
+            obj.send("#{k}=", v)
           end
 
           objs << obj
