@@ -132,7 +132,7 @@ module SolrMapper
             k = '_id' if k.to_s == 'id'
 
             class_eval { attr_accessor k } unless obj.respond_to?("#{k}=")
-            solr_fields << k.to_s unless solr_fields.include?(k.to_s)
+            self.solr_fields << k unless self.solr_fields.include?(k)
 
             obj.send("#{k}=", v)
           end
@@ -144,6 +144,7 @@ module SolrMapper
 
         objs
       end
+
 
       def send_update(data, opts = nil)
         solr_resource = RestClient::Resource.new(build_url('update', opts))
