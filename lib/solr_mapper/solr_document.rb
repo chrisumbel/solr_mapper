@@ -155,7 +155,11 @@ module SolrMapper
     end
 
     def save()
+      send(:before_save) if respond_to?(:before_save)
+
       self.class.execute_write(to_solr_xml, {:overwrite => true})
+
+      send(:after_save) if respond_to?(:after_save)      
     end
 
     def destroy
