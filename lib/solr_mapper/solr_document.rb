@@ -25,10 +25,12 @@ module SolrMapper
       attr_accessor :per_page
       attr_accessor :solr_fields
 
+      # send a read REST command to Solr
       def execute_read(opts)
         eval(RestClient.get(build_url('select', opts.merge(:wt => 'ruby'))))
       end
 
+      # send a write REST command to SOlr
       def execute_write(data, opts = nil)
         send_update(data, opts)
 
@@ -47,6 +49,7 @@ module SolrMapper
         URI::escape("#{base_url}/#{path}#{qs}")
       end
 
+      # create a querystring from a hash
       def build_qs(opts)
         uri = ''
 
@@ -66,11 +69,13 @@ module SolrMapper
         query(values, opts)
       end
 
+      # main interface by which consumers search solr via SolrMapper
       def query(values, opts = {})
         results, _ = query_counted(values, opts)
         results
       end
 
+      # execute  solr query and return the count as well as the results
       def query_counted(values, opts = {})
         if values.kind_of?(Hash)
           search_string = ''
@@ -88,6 +93,7 @@ module SolrMapper
         return map(response), response['response']['numFound']
       end
 
+      # look up an object by primary key
       def find(id)
         result = query(:id => id)
         return result[0] if result.count > 0
@@ -114,6 +120,7 @@ module SolrMapper
       end
 
       protected
+      # map values returned from Solr into ruby objects
       def map(docs)
         objs = []
 
@@ -162,6 +169,7 @@ module SolrMapper
       send(:after_save) if respond_to?(:after_save)      
     end
 
+    # remove an object from the index
     def destroy
       # make an xml delete message that Solr will be happy with
       delete_message = ''
@@ -174,6 +182,7 @@ module SolrMapper
       self.class.execute_write(delete_message)
     end
 
+    # convert a ruby object to xml compliant with a Solr update REST command
     def to_solr_xml
       output = ''
       builder = Builder::XmlMarkup.new(:target => output, :indent => 2)
@@ -219,6 +228,7 @@ module SolrMapper
       save()
     end
 
+    # handle rails building a url from us
     def to_param
       instance_variable_get('@_id').to_s
     end
