@@ -119,17 +119,18 @@ module SolrMapper
 
         docs['response']['docs'].each do |doc|
           obj = self.new
+          obj.send(:before_load) if obj.respond_to?(:before_load)
 
           doc.each_pair do |k, v|
             k = '_id' if k.to_s == 'id'
 
-            unless obj.class.method_defined?(k)
-              class_eval { attr_accessor k }
-              solr_fields << k.to_s unless solr_fields.include?(k.to_s)
-            end
-            
+            class_eval { attr_accessor k } unless obj.respond_to?("#{k}=")
+            solr_fields << k.to_s unless solr_fields.include?(k.to_s)
+
             obj.send("#{k}=", v)
           end
+
+          obj.send(:after_load) if obj.respond_to?(:after_load)
 
           objs << obj
         end
