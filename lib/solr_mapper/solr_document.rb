@@ -27,7 +27,8 @@ module SolrMapper
 
       # send a read REST command to Solr
       def execute_read(opts)
-        eval(RestClient.get(build_url('select', opts.merge(:wt => 'ruby'))))
+        url = build_url('select', opts.merge(:wt => 'ruby'))
+        eval(RestClient.get(url))
       end
 
       # send a write REST command to SOlr
@@ -75,8 +76,8 @@ module SolrMapper
         results
       end
 
-      # execute  solr query and return the count as well as the results
-      def query_counted(values, opts = {})
+      # execute  solr query and return the count as well as the RAW results
+      def raw_query(values, opts = {})
         if values.kind_of?(Hash)
           search_string = ''
 
@@ -89,7 +90,12 @@ module SolrMapper
           search_string = values.to_s
         end
 
-        response = execute_read(opts.merge(:q => search_string))
+        execute_read(opts.merge(:q => search_string))
+      end
+
+      # execute  solr query and return the count as well as OBJECTS
+      def query_counted(values, opts = {})
+        response = raw_query(values, opts)
         return map(response), response['response']['numFound']
       end
 

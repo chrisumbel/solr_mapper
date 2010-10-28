@@ -41,10 +41,30 @@ module SolrMapper
 
       def has_many(target, opts = {})
         class_name, field_name, variable_name, id_field = determine_names(target, opts)
+        @@facet_field_name = field_name
         id_field = "#{id_field}_id"
 
         has_many_relationships[field_name.to_s] = id_field
 
+        # add class method for loading relations via facets
+        class << self
+          define_method "#{@@facet_field_name}_facet" do |search|
+            fk = foreign_key(singularize(__method__.to_s.gsub(/_facet$/, '')))
+            solr_results = raw_query(search, {'facet' => 'true', 'facet.field' => fk})
+            klass = Object::const_get(classify(singularize(__method__.to_s.gsub(/_facet$/, ''))))
+            results = {}
+
+            solr_results['facet_counts']['facet_fields'][fk].each_slice(2).each do |pair|
+              results[klass.find(pair[0])] = pair[1]
+            end
+
+            results
+          end
+        end
+
+        @@facet_field_name = nil
+
+        # add a helper method that we'll use to hook arrays with manipulation logic we need
         class_eval do
           def relationize_array(array)
             class << array
@@ -75,7 +95,8 @@ module SolrMapper
 
             array
           end
-          
+
+          # define a getter for this relation
           define_method field_name do
             val = instance_variable_get(variable_name)
 
@@ -104,6 +125,7 @@ module SolrMapper
             val
           end
 
+          # define a setter for this relation
           define_method "#{field_name}=" do |vals|
             ids = []
 
