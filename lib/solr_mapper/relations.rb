@@ -19,14 +19,13 @@ module SolrMapper
 
       def has_one(target, opts = {})
         class_name, field_name, variable_name, id_field = determine_names(target, opts)
-        id_field = foreign_key(id_field)
 
         class_eval do
           define_method field_name do
             val = instance_variable_get(variable_name)
 
             unless val
-              id = instance_variable_get(id_field)              
+              id = instance_variable_get("@#{id_field}")
               val = Object::const_get(class_name).find(id) if id
             end
 
@@ -42,20 +41,20 @@ module SolrMapper
       def has_many(target, opts = {})
         class_name, field_name, variable_name, id_field = determine_names(target, opts)
         @@facet_field_name = field_name
-        id_field = "#{id_field}_id"
-
         has_many_relationships[field_name.to_s] = id_field
 
         # add class method for loading relations via facets
         class << self
           define_method "#{@@facet_field_name}_facet" do |search|
-            fk = foreign_key(singularize(__method__.to_s.gsub(/_facet$/, '')))
+            fk =  has_many_relationships[__method__.to_s.gsub(/_facet$/, '')]
+
             solr_results = raw_query(search, {'facet' => 'true', 'facet.field' => fk})
             klass = Object::const_get(classify(singularize(__method__.to_s.gsub(/_facet$/, ''))))
             results = {}
 
             solr_results['facet_counts']['facet_fields'][fk].each_slice(2).each do |pair|
-              results[klass.find(pair[0])] = pair[1]
+              child = klass.find(pair[0])
+              results[child] = pair[1] if child
             end
 
             results
@@ -101,15 +100,15 @@ module SolrMapper
             val = instance_variable_get(variable_name)
 
             unless val
-              ids = instance_variable_get(id_field)
+              ids = instance_variable_get("@#{id_field}")
               val = []
 
               val.instance_variable_set("@owner", self)
               val.instance_variable_set("@field_name", field_name.to_s)
 
               unless ids
-                instance_variable_set(id_field, [])
-                ids = instance_variable_get(id_field)
+                instance_variable_set("@#{id_field}", [])
+                ids = instance_variable_get("@#{id_field}")
               end
 
               ids.each do |id|
@@ -142,7 +141,7 @@ module SolrMapper
               relationize_array(vals) unless vals.respond_to?(:destroy)
             end
 
-            instance_variable_set(id_field, ids)
+            instance_variable_set("@#{id_field}", ids)
             instance_variable_set("@#{field_name}", val)
           end
         end
@@ -178,14 +177,15 @@ module SolrMapper
         class_name ||= classify(target)
         field_name = target
         variable_name = "@#{field_name}"
-        id_field_prefix = "@#{singularize(target)}"
+        id_field = opts[:foreign_key]
+        id_field ||= "#{foreign_key(singularize(target))}"
 
-        return class_name, field_name, variable_name, id_field_prefix
+        return class_name, field_name, variable_name, id_field
       end
     end
 
     def refresh_relation(field_name)
-      ids = instance_variable_get(self.class.has_many_relationships[field_name])
+      ids = instance_variable_get("@#{self.class.has_many_relationships[field_name]}")
       ids.clear
         
       instance_variable_get("@#{field_name}").each do |child|

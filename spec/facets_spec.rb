@@ -50,9 +50,7 @@ describe SolrMapper::SolrDocument do
   end
 
   it "should lookup related object by facet" do
-    Thing.stuffs_facet('*:*').each_pair do |stuff, count|
-      puts "#{stuff.name} had a count of #{count}"
-    end
+    Thing.stuffs_facet('*:*').count.should_not == 0
   end
 end
 
