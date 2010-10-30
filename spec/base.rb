@@ -21,24 +21,24 @@ include SolrMapper
 
 class Stuff
   include SolrDocument
-  @base_url = 'http://localhost:8080/solr_stuff'
-  @per_page = 10
+  bind_service_url 'http://localhost:8080/solr_stuff'
+  limit_page_size 10
 
   belongs_to :thing
 end
 
 class Widget
   include SolrDocument
-  @base_url = 'http://localhost:8080/solr_widget'
-  @per_page = 10
+  bind_service_url 'http://localhost:8080/solr_widget'
+  limit_page_size 10
 
   belongs_to :thing
 end
 
 class Thing
   include SolrDocument
-  @base_url = 'http://localhost:8080/solr_thing'
-  @per_page = 10
+  bind_service_url 'http://localhost:8080/solr_thing'
+  limit_page_size 10
 
   has_many :stuffs
   has_one :widget

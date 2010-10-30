@@ -25,6 +25,19 @@ module SolrMapper
       attr_accessor :per_page
       attr_accessor :solr_fields
 
+      def limit_page_size(val)
+         @per_page = val
+      end
+
+      def bind_service_url(val)
+        @base_url = val
+        @base_url = ActiveSupport::HashWithIndifferentAccess.new(@base_url) if @base_url.instance_of?(Hash)
+      end
+
+      def service_url
+        @base_url
+      end
+
       # send a read REST command to Solr
       def execute_read(opts)
         url = build_url('select', opts.merge(:wt => 'ruby'))

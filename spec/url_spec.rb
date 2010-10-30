@@ -37,11 +37,11 @@ describe SolrDocument do
 
     class AnotherThing
       include SolrDocument
-      @base_url = {
+      bind_service_url({
               :development => 'http://somehost/solr_thing',
               :test => 'http://localhost:8080/solr_thing',
               :production => 'http://somehost/solr_thing'
-      }
+      })
     end
 
     AnotherThing.build_url('select').should == 'http://localhost:8080/solr_thing/select'
@@ -52,11 +52,11 @@ describe SolrDocument do
 
     class AnotherThing
       include SolrDocument
-      @base_url = {
+      bind_service_url({
               'development' => 'http://somehost/solr_thing',
               'test' => 'http://localhost:8080/solr_thing',
               'production' => 'http://somehost/solr_thing'
-      }
+      })
     end
 
     AnotherThing.build_url('select').should == 'http://localhost:8080/solr_thing/select'

@@ -14,16 +14,16 @@ gem install solr_mapper
 
   class Stuff
     include SolrDocument
-    @base_url = 'http://localhost:8080/solr/stuff'
-    @per_page = 25
+    bind_service_url = 'http://localhost:8080/solr/stuff'
+    limit_page_size 25
 
     belongs_to :thing
   end
 
   class Widget
     include SolrDocument
-    @base_url = 'http://localhost:8080/solr/widget'
-    @per_page = 15
+    bind_service_url 'http://localhost:8080/solr/widget'
+    limit_page_size 15
 
     belongs_to :thing
   end
@@ -32,13 +32,13 @@ gem install solr_mapper
     include SolrDocument
 
     # base urls can also be defined by rails environments
-    @base_url = {
+    bind_service_url({
       :development => 'http://somehost/solr_thing',
       :test => 'http://localhost:8080/solr_thing',
       :production => 'http://livebox/solr/thing'
-    }
+    })
 
-    @per_page = 10
+    limit_page_size 10
 
     has_many :stuffs
     has_one :widget
