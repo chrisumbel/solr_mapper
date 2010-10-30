@@ -47,7 +47,14 @@ module SolrMapper
         qs = build_qs(opts)
         qs = '?' + qs unless qs.empty?
 
-        URI::escape("#{base_url}/#{path}#{qs}")
+        if self.base_url.kind_of?(Hash) && ENV['RAILS_ENV']
+          self.base_url = ActiveSupport::HashWithIndifferentAccess.new(self.base_url) unless self.base_url.kind_of?(ActiveSupport::HashWithIndifferentAccess)
+          base = self.base_url[ENV['RAILS_ENV']]
+        else
+          base = base_url
+        end
+
+        URI::escape("#{base}/#{path}#{qs}")
       end
 
       # create a querystring from a hash

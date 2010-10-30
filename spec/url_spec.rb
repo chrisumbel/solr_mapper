@@ -32,5 +32,34 @@ describe SolrDocument do
     Thing.build_url("update").should == "#{Thing.base_url}/update"
   end
 
+  it "should build URLs accepting hashes for the environment" do
+    ENV['RAILS_ENV'] = 'test'
+
+    class AnotherThing
+      include SolrDocument
+      @base_url = {
+              :development => 'http://somehost/solr_thing',
+              :test => 'http://localhost:8080/solr_thing',
+              :production => 'http://somehost/solr_thing'
+      }
+    end
+
+    AnotherThing.build_url('select').should == 'http://localhost:8080/solr_thing/select'
+  end
+
+  it "should build URLs accepting hashes for the environment via string keys" do
+    ENV['RAILS_ENV'] = 'test'
+
+    class AnotherThing
+      include SolrDocument
+      @base_url = {
+              'development' => 'http://somehost/solr_thing',
+              'test' => 'http://localhost:8080/solr_thing',
+              'production' => 'http://somehost/solr_thing'
+      }
+    end
+
+    AnotherThing.build_url('select').should == 'http://localhost:8080/solr_thing/select'
+  end
 end
 
