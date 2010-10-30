@@ -14,7 +14,7 @@ gem install solr_mapper
 
   class Stuff
     include SolrDocument
-    bind_service_url = 'http://localhost:8080/solr/stuff'
+    bind_service_url 'http://localhost:8080/solr/stuff'
     limit_page_size 25
 
     belongs_to :thing

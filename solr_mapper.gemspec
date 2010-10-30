@@ -2,15 +2,15 @@
 
 Gem::Specification.new do |s|
   s.name = %q{solr_mapper}
-  s.version = "0.1.6"
+  s.version = "0.1.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chris Umbel"]
-  s.date = %q{2010-10-29}
+  s.date = %q{2010-10-30}
   s.description = %q{Object Document Mapper for the Apache Foundation's Solr search platform}
   s.email = %q{chrisu@dvdempire.com}
   s.extra_rdoc_files = ["LICENSE.txt", "README.rdoc", "lib/solr_mapper.rb", "lib/solr_mapper/calculations.rb", "lib/solr_mapper/locators.rb", "lib/solr_mapper/relations.rb", "lib/solr_mapper/solr_document.rb"]
-  s.files = ["LICENSE.txt", "README.rdoc", "Rakefile", "lib/solr_mapper.rb", "lib/solr_mapper/calculations.rb", "lib/solr_mapper/locators.rb", "lib/solr_mapper/relations.rb", "lib/solr_mapper/solr_document.rb", "solr_mapper.gemspec", "spec/base.rb", "spec/calculations_spec.rb", "spec/facets_spec.rb", "spec/locators_spec.rb", "spec/misc_spec.rb", "spec/paginated_spec.rb", "spec/query_spec.rb", "spec/relation_spec.rb", "spec/solr/stuff/config/schema.xml", "spec/solr/thing/config/schema.xml", "spec/solr/widget/conf/schema.xml", "spec/url_spec.rb", "Manifest"]
+  s.files = ["LICENSE.txt", "Manifest", "README.rdoc", "Rakefile", "lib/solr_mapper.rb", "lib/solr_mapper/calculations.rb", "lib/solr_mapper/locators.rb", "lib/solr_mapper/relations.rb", "lib/solr_mapper/solr_document.rb", "solr_mapper.gemspec", "spec/base.rb", "spec/calculations_spec.rb", "spec/facets_spec.rb", "spec/locators_spec.rb", "spec/misc_spec.rb", "spec/paginated_spec.rb", "spec/query_spec.rb", "spec/relation_spec.rb", "spec/solr/stuff/config/schema.xml", "spec/solr/thing/config/schema.xml", "spec/solr/widget/conf/schema.xml", "spec/url_spec.rb"]
   s.homepage = %q{http://github.com/skunkworx/solr_mapper}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Solr_mapper", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
