@@ -35,7 +35,7 @@ gem install solr_mapper
     @base_url = {
       :development => 'http://somehost/solr_thing',
       :test => 'http://localhost:8080/solr_thing',
-      :production => 'http://somehost/solr_thing'
+      :production => 'http://livebox/solr/thing'
     }
 
     @per_page = 10
