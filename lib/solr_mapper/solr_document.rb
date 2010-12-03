@@ -44,7 +44,7 @@ module SolrMapper
         eval(RestClient.get(url))
       end
 
-      # send a write REST command to SOlr
+      # send a write REST command to Solr
       def execute_write(data, opts = nil)
         send_update(data, opts)
 
