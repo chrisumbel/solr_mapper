@@ -7,7 +7,6 @@ lib/solr_mapper/calculations.rb
 lib/solr_mapper/locators.rb
 lib/solr_mapper/relations.rb
 lib/solr_mapper/solr_document.rb
-solr_mapper.gemspec
 spec/base.rb
 spec/calculations_spec.rb
 spec/facets_spec.rb
