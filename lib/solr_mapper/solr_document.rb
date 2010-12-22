@@ -180,6 +180,7 @@ module SolrMapper
 
     attr_accessor :_id
 
+    # the property doesn't exist for this document. add it now.
     def method_missing(m, *args, &block)
       method_name = m.to_s
       assignment = method_name.match(/\=$/)
@@ -190,9 +191,7 @@ module SolrMapper
 
     def save()
       send(:before_save) if respond_to?(:before_save)
-
       self.class.execute_write(to_solr_xml, {:overwrite => true})
-
       send(:after_save) if respond_to?(:after_save)      
     end
 

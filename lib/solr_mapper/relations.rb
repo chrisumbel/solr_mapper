@@ -17,6 +17,7 @@ module SolrMapper
     module ClassMethods
       attr_accessor :has_many_relationships
 
+      # handle a has one relationship. this document contains a foreign key to a doc in another index
       def has_one(target, opts = {})
         class_name, field_name, variable_name, id_field = determine_names(target, opts)
 
@@ -38,6 +39,7 @@ module SolrMapper
         end
       end
 
+      # handle a has one relationship. this document contains a foreign key to another index's documents
       def has_many(target, opts = {})
         class_name, field_name, variable_name, id_field = determine_names(target, opts)
         @@facet_field_name = field_name
@@ -147,14 +149,17 @@ module SolrMapper
         end
       end
 
+      # handle a belongs to relation. target index contains document with foreign keys to this document
       def belongs_to(target_name, opts = {})
         target_id_field_name = foreign_key(self.name)
 
         class_eval do
+          # create getter for owner object
           define_method target_name do
             owner = instance_variable_get("@#{target_name}")
 
             unless owner
+              # owner object hasn't been lazy loaded.  do so now.
               owner = Object::const_get(classify(target_name)).query(target_id_field_name => instance_variable_get("@_id"))[0]
               instance_variable_set("@#{target_name}", owner)
             end
@@ -162,6 +167,7 @@ module SolrMapper
             owner
           end
 
+          # create setter for owner object
           define_method "#{target_name}=" do |val|
             instance_variable_set("@#{target_name}", val)
             val.instance_variable_set("@#{target_id_field_name}", instance_variable_get("@_id"))
@@ -172,6 +178,7 @@ module SolrMapper
 
       protected
 
+      # figure out the names of properties and classes involved in the relation
       def determine_names(target, opts = {})
         class_name = opts[:class_name]
         class_name ||= classify(target)
@@ -184,6 +191,7 @@ module SolrMapper
       end
     end
 
+    # when the owner collection is modified this will be called sync the relation up
     def refresh_relation(field_name)
       ids = instance_variable_get("@#{self.class.has_many_relationships[field_name]}")
       ids.clear
