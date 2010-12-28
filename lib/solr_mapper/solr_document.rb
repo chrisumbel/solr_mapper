@@ -171,16 +171,15 @@ module SolrMapper
         objs
       end
 
-
       def send_update(data, opts = nil)
         solr_resource = RestClient::Resource.new(build_url('update', opts))
-        solr_resource.post(data, {:content_type => 'text/xml'})
+        puts solr_resource.post(data, {:content_type => 'text/xml'}).inspect
       end
     end
 
     attr_accessor :_id
 
-    # the property doesn't exist for this document. add it now.
+    # property doesn't exist yet. create it on demand.
     def method_missing(m, *args, &block)
       method_name = m.to_s
       assignment = method_name.match(/\=$/)
@@ -192,7 +191,7 @@ module SolrMapper
     def save()
       send(:before_save) if respond_to?(:before_save)
       self.class.execute_write(to_solr_xml, {:overwrite => true})
-      send(:after_save) if respond_to?(:after_save)      
+      send(:after_save) if respond_to?(:after_save)
     end
 
     # remove an object from the index

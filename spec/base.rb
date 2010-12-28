@@ -43,3 +43,12 @@ class Thing
   has_many :stuffs
   has_one :widget
 end
+
+class Item
+  include SolrDocument
+  bind_service_url 'http://localhost:8080/solr_item'
+  limit_page_size 10
+
+  has_many :stuffs
+  has_one :widget
+end
