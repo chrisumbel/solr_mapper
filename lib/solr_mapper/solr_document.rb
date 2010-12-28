@@ -38,6 +38,14 @@ module SolrMapper
         @base_url
       end
 
+      def auto_generate_id
+        @auto_geneerate_id = true
+      end
+
+      def auto_generate_id?
+        @auto_geneerate_id
+      end
+
       # send a read REST command to Solr
       def execute_read(opts)
         url = build_url('select', opts.merge(:wt => 'ruby'))
@@ -47,7 +55,7 @@ module SolrMapper
       # send a write REST command to Solr
       def execute_write(data, opts = nil)
         send_update(data, opts)
-
+        
         # make an xml commit message Solr will be happy with
         commit_message = ''
         builder = Builder::XmlMarkup.new(:target => commit_message, :indent => 2)
@@ -191,6 +199,12 @@ module SolrMapper
 
     def save()
       send(:before_save) if respond_to?(:before_save)
+      
+      if not @_id and self.class.auto_generate_id?
+        @_id = UUID.new().generate() 
+        self.class.solr_fields << '_id' unless self.class.solr_fields.include?('_id')
+      end
+
       self.class.execute_write(to_solr_xml, {:overwrite => true})
       send(:after_save) if respond_to?(:after_save)      
     end
