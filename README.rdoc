@@ -44,6 +44,20 @@ gem install solr_mapper
     has_one :widget
   end
 
+=== Auto Generated IDs
+    
+  as of 0.1.9 you can cause a document to create a UUID id
+  for new objects with: 
+
+  class Stuff
+    include SolrDocument
+
+    # tells solr_mapper to generate the id
+    auto_generate_id
+
+    bind_service_url 'http://localhost:8080/solr/stuff'
+  end
+
 === Reading
 
   thing = Thing.find(1)
