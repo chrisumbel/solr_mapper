@@ -181,7 +181,7 @@ module SolrMapper
 
       def send_update(data, opts = nil)
         solr_resource = RestClient::Resource.new(build_url('update', opts))
-        puts solr_resource.post(data, {:content_type => 'text/xml'}).inspect
+        solr_resource.post(data, {:content_type => 'text/xml'}).inspect
       end
     end
 

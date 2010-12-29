@@ -19,6 +19,7 @@ end
 require 'rest_client'
 require 'builder'
 require 'will_paginate'
+require 'will_paginate/collection'
 require 'active_support/inflector'
 require 'active_support/hash_with_indifferent_access'
 
