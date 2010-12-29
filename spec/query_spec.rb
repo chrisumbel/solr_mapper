@@ -24,7 +24,9 @@ describe SolrMapper::SolrDocument do
 
     thing = Thing.new({:_id => '04787560-bc23-012d-817c-60334b2add60', :content => 'sample content 1', :name => 'sample item 1'})
     thing.save
+
     thing = Thing.new({:_id => '04787560-bc23-012d-817c-60334b2add61', :content => 'sample content 2', :name => 'sample item 2'})
+
     thing.save
   end
 
